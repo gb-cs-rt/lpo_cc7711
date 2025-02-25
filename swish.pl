@@ -103,10 +103,15 @@ prima(X,Y):- progenitor(A,X),
 
 descendente(X,Y):- progenitor(Y,X).
 
-descendente(X,Y):- progenitor(X,A),
+descendente(X,Y):- progenitor(A,X),
     descendente(A,Y).
 
-ascendente(X,Y):- progenitor(X,Y).
+ascendente(X, Y) :- ascendente(X, Y, []).
 
-ascendente(X,Y):- progenitor(X,A),
-    ascendente(A,Y).
+ascendente(X, Y, _) :- 
+    progenitor(X, Y).  % Caso base: X é pai/mãe de Y
+
+ascendente(X, Y, Visitados) :- 
+    progenitor(X, A), 
+    \+ member(A, Visitados),  % Evita revisitar ancestrais
+    ascendente(A, Y, [X | Visitados]).  % Adiciona X à lista de visitados
